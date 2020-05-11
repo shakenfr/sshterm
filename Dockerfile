@@ -6,7 +6,7 @@ COPY localoptions.h /dropbear
 RUN cd /dropbear && autoconf 
 RUN cd /dropbear && autoheader 
 RUN cd /dropbear && CC=musl-gcc ./configure --enable-static --disable-zlib
-RUN cd /dropbear && make PROGRAMS="dbclient dropbearkey dropbearconvert"
+RUN cd /dropbear && make PROGRAMS="dbclient dropbearkey dropbearconvert scp"
 RUN cd /dropbear && chmod +x dbclient
 RUN cd / && wget https://busybox.net/downloads/busybox-1.29.3.tar.bz2
 RUN cd / && tar jxvf busybox-1.29.3.tar.bz2
@@ -22,6 +22,7 @@ run adduser --system --ingroup cloud_user cloud_user --disabled-password --disab
 FROM scratch
 COPY --from=compiler /busybox-1.29.3/sysbin /
 COPY --from=compiler /dropbear/dbclient /bin/ssh
+COPY --from=compiler /dropbear/scp /bin/scp
 COPY --from=compiler /dropbear/dropbearconvert /bin/convert
 COPY --from=compiler /etc/passwd /etc/passwd
 COPY --from=compiler /etc/shadow /etc/shadow
